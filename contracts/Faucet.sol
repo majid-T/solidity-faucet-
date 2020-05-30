@@ -1,23 +1,27 @@
 // SPDX-License-Identifer: MIT
-// Develop a faucet smart contract using truffle so that user can withdraw ether
-// for free not more than 0.1 ether per withdraw.
 pragma solidity >0.5.0 <0.6.0;
 
-contract Faucet {
 
-    event Withdrawal(address indexed to, uint amount);
-    event Deposit(address indexed from, uint amount);
+contract Faucet {
+    event Withdrawal(address indexed to, uint256 amount);
+    event Deposit(address indexed from, uint256 amount);
 
     // give out ether to anyone who asks
-    function withdraw(uint withdraw_amount) public {
+    function withdraw(uint256 withdraw_amount) public {
         // check for sufficient funds
-        require(withdraw_amount <= 100000000000000000);
-        require(address(this).balance >= withdraw_amount, "Faucet: Insufficient balance for withdrawal request");
+        require(
+            withdraw_amount <= 100000000000000000,
+            "Amount of transfer should not be more than 0.1 ether"
+        );
+        require(
+            address(this).balance >= withdraw_amount,
+            "Faucet: Insufficient balance for withdrawal request"
+        );
         msg.sender.transfer(withdraw_amount);
         emit Withdrawal(msg.sender, withdraw_amount);
     }
 
-    function () external payable {
+    function() external payable {
         emit Deposit(msg.sender, msg.value);
     }
 }
